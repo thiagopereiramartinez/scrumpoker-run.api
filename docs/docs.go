@@ -34,75 +34,13 @@ var doc = `{
         "/rooms": {
             "post": {
                 "consumes": [
-                    "application/json"
-                ],
-                "produces": [
+                    "application/json",
                     "application/json"
                 ],
                 "tags": [
                     "Rooms"
                 ],
-                "summary": "Create a new room",
-                "parameters": [
-                    {
-                        "description": "Create a new room",
-                        "name": "room",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/rooms.RoomNewRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/rooms.RoomNewResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/fiber.Error"
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "definitions": {
-        "fiber.Error": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "rooms.RoomNewRequest": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "rooms.RoomNewResponse": {
-            "type": "object",
-            "properties": {
-                "room_id": {
-                    "type": "string"
-                }
+                "summary": "Create a new room"
             }
         }
     }
