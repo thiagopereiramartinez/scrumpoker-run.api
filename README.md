@@ -1,0 +1,1 @@
+[![Workflow badge](https://github.com/thiagopereiramartinez/scrumpoker-run.api/actions/workflows/cicd.yml/badge.svg)](https://github.com/thiagopereiramartinez/scrumpoker-run.api/actions/workflows/cicd.yml)
