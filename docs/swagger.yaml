@@ -1,0 +1,59 @@
+basePath: /
+definitions:
+  fiber.Error:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  rooms.RoomNewRequest:
+    properties:
+      name:
+        type: string
+    type: object
+  rooms.RoomNewResponse:
+    properties:
+      room_id:
+        type: string
+    type: object
+info:
+  contact:
+    email: thiago.pereira.ti@gmail.com
+    name: Thiago P. Martinez
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Scrum Poker API
+  version: "1.0"
+paths:
+  /rooms:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create a new room
+        in: body
+        name: room
+        required: true
+        schema:
+          $ref: '#/definitions/rooms.RoomNewRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rooms.RoomNewResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/fiber.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/fiber.Error'
+      summary: Create a new room
+      tags:
+      - Rooms
+swagger: "2.0"
