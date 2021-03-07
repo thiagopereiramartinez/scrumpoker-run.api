@@ -5,6 +5,7 @@ import (
 	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/thiagopereiramartinez/scrumpoker-run.api/di"
 	_ "github.com/thiagopereiramartinez/scrumpoker-run.api/docs"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/rooms"
 	"log"
@@ -20,15 +21,21 @@ import (
 // @BasePath /
 func main() {
 
+	// Setup Dependency Injection
+	if err := di.SetupDependencies(); err != nil {
+		log.Fatalln(err)
+	}
+
+	// Create Fiber App
 	app := fiber.New()
 
-	// Configurar CORS
+	// Setup CORS
 	app.Use(cors.New())
 
-	// Configure Swagger
+	// Setup Swagger
 	app.Get("/swagger/*", swagger.Handler)
 
-	// Registrar "rooms"
+	// Register "rooms"
 	rooms.Register(app)
 
 	// Initialize Fiber App
@@ -36,6 +43,9 @@ func main() {
 	if len(port) == 0 {
 		port = "8080"
 	}
-	log.Fatal(app.Listen(fmt.Sprintf(":%s", port)))
+
+	if err := app.Listen(fmt.Sprintf(":%s", port)); err != nil {
+		log.Fatalln(err)
+	}
 
 }
