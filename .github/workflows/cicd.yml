@@ -64,6 +64,11 @@ jobs:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v2
 
+      - name: 'Generate Swagger docs'
+        run: |
+          go get -u github.com/swaggo/swag/cmd/swag
+          ~/go/bin/swag init
+
       - name: 'Generate Docker image'
         id: build
         run: |
