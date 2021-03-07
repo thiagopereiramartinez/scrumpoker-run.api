@@ -4,7 +4,7 @@ COPY ./ /app
 
 WORKDIR /app
 RUN go get
-RUN go build -o main github.com/thiagopereiramartinez/scrumpoker-run.api
+RUN go build -o main -v ./...
 
 FROM golang:1.16 AS go-runtime
 
