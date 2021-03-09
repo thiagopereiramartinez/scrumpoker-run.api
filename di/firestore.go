@@ -9,7 +9,7 @@ import (
 
 func SetupFirestore() error {
 
-	container.Transient(func() (*firestore.Client, error) {
+	container.Singleton(func() (*firestore.Client, error) {
 		ctx := context.Background()
 		conf := &firebase.Config{}
 		app, err := firebase.NewApp(ctx, conf)

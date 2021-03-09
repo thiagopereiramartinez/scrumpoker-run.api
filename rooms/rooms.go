@@ -15,8 +15,8 @@ import (
 // @Accept json
 // @Produce json
 // @Success 200 {object} rooms.RoomNewResponse
-// @Failure 400 {object} fiber.Error
-// @Failure 500 {object} fiber.Error
+// @Failure 400 {object} models.Error
+// @Failure 500 {object} models.Error
 // @Router /rooms [post]
 func newRoom(c *fiber.Ctx) error {
 	body := new(rooms.RoomNewRequest)
@@ -32,7 +32,6 @@ func newRoom(c *fiber.Ctx) error {
 
 	db := new(firestore.Client)
 	container.Make(&db)
-	defer db.Close()
 
 	doc := db.Collection("rooms").NewDoc()
 	_, err := doc.Set(context.Background(), map[string]interface{}{

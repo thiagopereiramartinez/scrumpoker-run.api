@@ -38,6 +38,11 @@ jobs:
         run: |
           go get
 
+      - name: 'Generate Swagger docs'
+        run: |
+          go get -u github.com/swaggo/swag/cmd/swag
+          ~/go/bin/swag init
+
       - name: 'Test project'
         run: |
           go test -v ./...

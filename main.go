@@ -1,10 +1,12 @@
 package main
 
 import (
+	"cloud.google.com/go/firestore"
 	"fmt"
 	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/golobby/container"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/di"
 	_ "github.com/thiagopereiramartinez/scrumpoker-run.api/docs"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/rooms"
@@ -47,5 +49,12 @@ func main() {
 	if err := app.Listen(fmt.Sprintf(":%s", port)); err != nil {
 		log.Fatalln(err)
 	}
+
+	defer func() {
+		// Encerrar conexão com o Firestore
+		db := new(firestore.Client)
+		container.Make(*db)
+		db.Close()
+	}()
 
 }
