@@ -6,11 +6,18 @@ definitions:
       message:
         type: string
     type: object
-  rooms.RoomJoinRequest:
+  players.Player:
     properties:
+      id:
+        type: string
+      join_at:
+        type: string
       name:
         type: string
-      room_id:
+    type: object
+  rooms.RoomJoinRequest:
+    properties:
+      player_name:
         type: string
     type: object
   rooms.RoomJoinResponse:
@@ -68,17 +75,22 @@ paths:
       summary: Create a new room
       tags:
       - Rooms
-  /rooms/join:
+  /rooms/{id}/join:
     post:
       consumes:
       - application/json
       parameters:
       - description: Join a room
         in: body
-        name: room
+        name: body
         required: true
         schema:
           $ref: '#/definitions/rooms.RoomJoinRequest'
+      - description: Room Id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -99,6 +111,34 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
       summary: Join a room
+      tags:
+      - Rooms
+  /rooms/{id}/players:
+    get:
+      parameters:
+      - description: Room Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/players.Player'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Get players from a room
       tags:
       - Rooms
 swagger: "2.0"

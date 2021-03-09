@@ -19,16 +19,12 @@ type RoomNewResponse struct {
 }
 
 type RoomJoinRequest struct {
-	Name   string `json:"name"`
-	RoomId string `json:"room_id"`
+	PlayerName   string `json:"player_name"`
 }
 
 func (body *RoomJoinRequest) Validate() error {
-	if len(body.Name) == 0 {
+	if len(body.PlayerName) == 0 {
 		return errors.New("the name of the player is required")
-	}
-	if len(body.RoomId) == 0 {
-		return errors.New("the room_id is required")
 	}
 
 	return nil

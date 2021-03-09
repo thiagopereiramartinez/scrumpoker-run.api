@@ -7,9 +7,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/golobby/container"
+	"github.com/thiagopereiramartinez/scrumpoker-run.api/controllers/rooms"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/di"
 	_ "github.com/thiagopereiramartinez/scrumpoker-run.api/docs"
-	"github.com/thiagopereiramartinez/scrumpoker-run.api/rooms"
 	"log"
 	"os"
 )
@@ -30,6 +30,9 @@ func main() {
 	app.Use(cors.New())
 
 	// Setup Swagger
+	app.Get("/swagger", func(ctx *fiber.Ctx) error {
+		return ctx.Redirect("/swagger/index.html")
+	})
 	app.Get("/swagger/*", swagger.Handler)
 
 	// Register "rooms"

@@ -11,6 +11,7 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/gofiber/fiber/v2 v2.5.0
+	github.com/golang/protobuf v1.4.3
 	github.com/golobby/container v1.3.0
 	github.com/klauspost/compress v1.11.12 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect

@@ -69,7 +69,7 @@ var doc = `{
                 }
             }
         },
-        "/rooms/join": {
+        "/rooms/{id}/join": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -84,12 +84,19 @@ var doc = `{
                 "parameters": [
                     {
                         "description": "Join a room",
-                        "name": "room",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/rooms.RoomJoinRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Room Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -103,6 +110,49 @@ var doc = `{
                         "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/{id}/players": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Get players from a room",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Room Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/players.Player"
+                            }
                         }
                     },
                     "404": {
@@ -133,13 +183,24 @@ var doc = `{
                 }
             }
         },
+        "players.Player": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "join_at": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "rooms.RoomJoinRequest": {
             "type": "object",
             "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "room_id": {
+                "player_name": {
                     "type": "string"
                 }
             }
