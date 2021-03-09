@@ -9,7 +9,7 @@ on:
     paths-ignore: [ '*.md' ]
 
 env:
-  PROJECT_ID: 'scrumpoker-run'
+  PROJECT_ID: ${{ secrets.GOOGLE_CLOUD_PROJECT_ID }}
 
 jobs:
 
@@ -77,8 +77,12 @@ jobs:
       - name: 'Generate Docker image'
         id: build
         run: |
-          BRANCH=$(echo $GITHUB_REF | sed 's/^.*\/\(.*\)$/\1/g')
-          IMAGE_NAME="us.gcr.io/$PROJECT_ID/api:$BRANCH"
+          if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+             BRANCH=${GITHUB_HEAD_REF}
+          else
+             BRANCH=${GITHUB_REF#refs/heads/}
+          fi
+          IMAGE_NAME="us.gcr.io/$PROJECT_ID/api:${BRANCH//\//-}"
           docker build -t $IMAGE_NAME .
           echo "::set-output name=IMAGE_NAME::$IMAGE_NAME"
 
@@ -116,3 +120,19 @@ jobs:
             --region us-central1 \
             --allow-unauthenticated \
             --image ${{ needs.build.outputs.IMAGE_NAME }}
+
+  sonarcloud:
+    name: 'SonarCloud'
+    runs-on: ubuntu-latest
+    needs: [ "build" ]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
