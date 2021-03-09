@@ -189,7 +189,7 @@ var doc = `{
                 "id": {
                     "type": "string"
                 },
-                "join_at": {
+                "joined_at": {
                     "type": "string"
                 },
                 "name": {
