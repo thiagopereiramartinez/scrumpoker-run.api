@@ -16,11 +16,6 @@ import (
 
 // @title Scrum Poker API
 // @version 1.0
-// @contact.name Thiago P. Martinez
-// @contact.email thiago.pereira.ti@gmail.com
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-// @BasePath /
 func main() {
 
 	// Setup Dependency Injection

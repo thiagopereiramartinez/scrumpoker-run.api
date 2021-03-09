@@ -1,10 +1,27 @@
-basePath: /
 definitions:
   models.Error:
     properties:
       code:
         type: integer
       message:
+        type: string
+    type: object
+  rooms.RoomJoinRequest:
+    properties:
+      name:
+        type: string
+      room_id:
+        type: string
+    type: object
+  rooms.RoomJoinResponse:
+    properties:
+      player_id:
+        type: string
+      player_name:
+        type: string
+      room_id:
+        type: string
+      room_name:
         type: string
     type: object
   rooms.RoomNewRequest:
@@ -18,12 +35,7 @@ definitions:
         type: string
     type: object
 info:
-  contact:
-    email: thiago.pereira.ti@gmail.com
-    name: Thiago P. Martinez
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  contact: {}
   title: Scrum Poker API
   version: "1.0"
 paths:
@@ -54,6 +66,39 @@ paths:
           schema:
             $ref: '#/definitions/models.Error'
       summary: Create a new room
+      tags:
+      - Rooms
+  /rooms/join:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Join a room
+        in: body
+        name: room
+        required: true
+        schema:
+          $ref: '#/definitions/rooms.RoomJoinRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rooms.RoomJoinResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Join a room
       tags:
       - Rooms
 swagger: "2.0"
