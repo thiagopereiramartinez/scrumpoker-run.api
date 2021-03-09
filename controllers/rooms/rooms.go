@@ -4,7 +4,6 @@ import (
 	"cloud.google.com/go/firestore"
 	"context"
 	"errors"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golobby/container"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/models/players"
@@ -17,7 +16,7 @@ import (
 // @Param room body rooms.RoomNewRequest true "Create a new room"
 // @Accept json
 // @Produce json
-// @Success 200 {object} rooms.RoomNewResponse
+// @Success 200 {object} string
 // @Failure 400 {object} models.Error
 // @Failure 500 {object} models.Error
 // @Router /rooms [post]
@@ -46,9 +45,7 @@ func newRoom(c *fiber.Ctx) error {
 		return nil
 	}
 
-	return c.JSON(rooms.RoomNewResponse{
-		RoomId: doc.ID,
-	})
+	return c.JSON(doc.ID)
 }
 
 // @Summary Join a room
@@ -85,12 +82,13 @@ func joinRoom(c *fiber.Ctx) error {
 		return nil
 	}
 
-	var room map[string]interface{}
+	var room rooms.Room
 	err = roomSnap.DataTo(&room)
 	if err != nil {
 		_ = utils.SendError(c, 500, errors.New("unable to retrieve room information"))
 		return nil
 	}
+	room.Id = roomSnap.Ref.ID
 
 	player := db.Collection("rooms").Doc(roomId).Collection("players").NewDoc()
 	_, err = player.Set(context.Background(), map[string]interface{}{
@@ -103,8 +101,7 @@ func joinRoom(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(rooms.RoomJoinResponse{
-		RoomId:     roomId,
-		RoomName:   fmt.Sprintf("%v", room["name"]),
+		Room:       room,
 		PlayerId:   player.ID,
 		PlayerName: body.PlayerName,
 	})

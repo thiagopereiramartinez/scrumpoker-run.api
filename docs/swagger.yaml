@@ -15,6 +15,15 @@ definitions:
       name:
         type: string
     type: object
+  rooms.Room:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
   rooms.RoomJoinRequest:
     properties:
       player_name:
@@ -22,23 +31,16 @@ definitions:
     type: object
   rooms.RoomJoinResponse:
     properties:
-      player_id:
+      id:
         type: string
-      player_name:
+      name:
         type: string
-      room_id:
-        type: string
-      room_name:
-        type: string
+      room:
+        $ref: '#/definitions/rooms.Room'
     type: object
   rooms.RoomNewRequest:
     properties:
       name:
-        type: string
-    type: object
-  rooms.RoomNewResponse:
-    properties:
-      room_id:
         type: string
     type: object
 info:
@@ -63,7 +65,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/rooms.RoomNewResponse'
+            type: string
         "400":
           description: Bad Request
           schema:

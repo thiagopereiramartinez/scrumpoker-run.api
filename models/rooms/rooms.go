@@ -1,6 +1,15 @@
 package rooms
 
-import "errors"
+import (
+	"errors"
+	"time"
+)
+
+type Room struct {
+	Id        string    `json:"id"`
+	Name      string    `json:"name" firestore:"name"`
+	CreatedAt time.Time `json:"created_at" firestore:"timestamp"`
+}
 
 type RoomNewRequest struct {
 	Name string `json:"name"`
@@ -14,12 +23,8 @@ func (body *RoomNewRequest) Validate() error {
 	return nil
 }
 
-type RoomNewResponse struct {
-	RoomId string `json:"room_id"`
-}
-
 type RoomJoinRequest struct {
-	PlayerName   string `json:"player_name"`
+	PlayerName string `json:"player_name"`
 }
 
 func (body *RoomJoinRequest) Validate() error {
@@ -31,8 +36,7 @@ func (body *RoomJoinRequest) Validate() error {
 }
 
 type RoomJoinResponse struct {
-	RoomId     string `json:"room_id"`
-	RoomName   string `json:"room_name"`
-	PlayerId   string `json:"player_id"`
-	PlayerName string `json:"player_name"`
+	Room       Room   `json:"room"`
+	PlayerId   string `json:"id"`
+	PlayerName string `json:"name"`
 }

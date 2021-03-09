@@ -51,7 +51,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/rooms.RoomNewResponse"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -197,6 +197,20 @@ var doc = `{
                 }
             }
         },
+        "rooms.Room": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "rooms.RoomJoinRequest": {
             "type": "object",
             "properties": {
@@ -208,17 +222,14 @@ var doc = `{
         "rooms.RoomJoinResponse": {
             "type": "object",
             "properties": {
-                "player_id": {
+                "id": {
                     "type": "string"
                 },
-                "player_name": {
+                "name": {
                     "type": "string"
                 },
-                "room_id": {
-                    "type": "string"
-                },
-                "room_name": {
-                    "type": "string"
+                "room": {
+                    "$ref": "#/definitions/rooms.Room"
                 }
             }
         },
@@ -226,14 +237,6 @@ var doc = `{
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "rooms.RoomNewResponse": {
-            "type": "object",
-            "properties": {
-                "room_id": {
                     "type": "string"
                 }
             }
