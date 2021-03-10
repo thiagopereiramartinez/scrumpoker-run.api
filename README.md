@@ -1,1 +1,3 @@
-[![Workflow badge](https://github.com/thiagopereiramartinez/scrumpoker-run.api/actions/workflows/cicd.yml/badge.svg)](https://github.com/thiagopereiramartinez/scrumpoker-run.api/actions/workflows/cicd.yml)
+[![Workflow badge](https://github.com/thiagopereiramartinez/scrumpoker-run.api/actions/workflows/cicd.yml/badge.svg)](https://github.com/thiagopereiramartinez/scrumpoker-run.api/actions/workflows/cicd.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=thiagopereiramartinez_scrumpoker-run.api&metric=alert_status)](https://sonarcloud.io/dashboard?id=thiagopereiramartinez_scrumpoker-run.api) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=thiagopereiramartinez_scrumpoker-run.api&metric=coverage)](https://sonarcloud.io/dashboard?id=thiagopereiramartinez_scrumpoker-run.api)
+
+# scrumpoker-run.api
