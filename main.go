@@ -51,7 +51,7 @@ func main() {
 	defer func() {
 		// Encerrar conexão com o Firestore
 		db := new(firestore.Client)
-		container.Make(*db)
+		container.Make(&db)
 		db.Close()
 	}()
 

@@ -26,6 +26,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
+      - name: 'Cache npm dependencies'
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: 'Setup Node.js'
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: 'Setup Firebase CLI'
+        run: |
+          npm install -g firebase-tools
+
       - name: 'Setup Go 1.16'
         uses: actions/setup-go@v2
         with:
@@ -45,7 +62,8 @@ jobs:
 
       - name: 'Test project'
         run: |
-          go test -coverprofile=coverage.out -covermode=atomic -v ./... > test-report.out
+          FIRESTORE_EMULATOR_HOST=localhost:8400
+          firebase emulators:exec --only firestore "go test -coverprofile=coverage.out -covermode=atomic -json -v ./... > test-report.out" --token "${{ secrets.FIREBASE_TOKEN }}"
 
       - name: 'Upload test artifacts'
         uses: actions/upload-artifact@master
@@ -131,7 +149,7 @@ jobs:
   sonarcloud:
     name: 'SonarCloud'
     runs-on: ubuntu-latest
-    needs: [ "build" ]
+    needs: [ "test" ]
 
     steps:
       - uses: actions/checkout@v2
