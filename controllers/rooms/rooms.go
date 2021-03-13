@@ -41,7 +41,7 @@ func newRoom(c *fiber.Ctx) error {
 		"timestamp": firestore.ServerTimestamp,
 	})
 	if err != nil {
-		_ = utils.SendError(c, 400, err)
+		_ = utils.SendError(c, 500, err)
 		return nil
 	}
 
@@ -96,7 +96,7 @@ func joinRoom(c *fiber.Ctx) error {
 		"timestamp": firestore.ServerTimestamp,
 	})
 	if err != nil {
-		_ = utils.SendError(c, 400, err)
+		_ = utils.SendError(c, 500, err)
 		return nil
 	}
 
@@ -117,10 +117,6 @@ func joinRoom(c *fiber.Ctx) error {
 // @Router /rooms/{id}/players [get]
 func getPlayers(c *fiber.Ctx) error {
 	roomId := c.Params("id")
-	if len(roomId) == 0 {
-		_ = utils.SendError(c, 400, errors.New("the room_id is required"))
-		return nil
-	}
 
 	ctx := context.Background()
 

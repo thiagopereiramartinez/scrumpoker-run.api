@@ -2,6 +2,7 @@ package rooms
 
 import (
 	"errors"
+	"strings"
 	"time"
 )
 
@@ -16,7 +17,7 @@ type RoomNewRequest struct {
 }
 
 func (body *RoomNewRequest) Validate() error {
-	if len(body.Name) == 0 {
+	if len(strings.TrimSpace(body.Name)) == 0 {
 		return errors.New("the name of the room is required")
 	}
 
@@ -28,7 +29,7 @@ type RoomJoinRequest struct {
 }
 
 func (body *RoomJoinRequest) Validate() error {
-	if len(body.PlayerName) == 0 {
+	if len(strings.TrimSpace(body.PlayerName)) == 0 {
 		return errors.New("the name of the player is required")
 	}
 
