@@ -63,7 +63,7 @@ jobs:
       - name: 'Test project'
         run: |
           FIRESTORE_EMULATOR_HOST=localhost:8400
-          firebase emulators:exec --only firestore "go test -coverprofile=coverage.out -covermode=atomic -json -v ./... > test-report.out" --token "${{ secrets.FIREBASE_TOKEN }}"
+          firebase emulators:exec --only firestore "go test -coverprofile=coverage.out -covermode=atomic -v ./..." --token "${{ secrets.FIREBASE_TOKEN }}"
 
       - name: 'Upload test artifacts'
         uses: actions/upload-artifact@master
