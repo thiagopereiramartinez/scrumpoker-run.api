@@ -57,7 +57,7 @@ func TestNewRoomValid(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/rooms", bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
-	res, err := app.Test(req)
+	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
 	assert.Equal(200, res.StatusCode)
@@ -83,7 +83,7 @@ func TestNewRoomNameIsEmpty(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/rooms", bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
-	res, err := app.Test(req)
+	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
 	assert.Equal(400, res.StatusCode)
@@ -106,7 +106,7 @@ func TestNewRoomNameIsBlank(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/rooms", bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
-	res, err := app.Test(req)
+	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
 	assert.Equal(400, res.StatusCode)
@@ -129,7 +129,7 @@ func TestNewRoomInvalidJsonBody(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/rooms", bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
-	res, err := app.Test(req)
+	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
 	assert.Equal(400, res.StatusCode)
@@ -152,7 +152,7 @@ func TestNewRoomInvalidContentType(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/rooms", bytes.NewReader(body))
 	req.Header.Set("Content-Type", "plain/text")
-	res, err := app.Test(req)
+	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
 	assert.Equal(500, res.StatusCode)
@@ -187,7 +187,7 @@ func TestJoinRoomValid(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", fmt.Sprintf("/rooms/%s/join", roomId), bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
-	res, err := app.Test(req)
+	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
 	assert.Equal(200, res.StatusCode)
@@ -223,7 +223,7 @@ func TestJoinRoomNameIsEmpty(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", fmt.Sprintf("/rooms/%s/join", roomId), bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
-	res, err := app.Test(req)
+	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
 	assert.Equal(400, res.StatusCode)
@@ -247,7 +247,7 @@ func TestJoinRoomNameIsBlank(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", fmt.Sprintf("/rooms/%s/join", roomId), bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
-	res, err := app.Test(req)
+	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
 	assert.Equal(400, res.StatusCode)
@@ -271,7 +271,7 @@ func TestJoinRoomInvalidJsonBody(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", fmt.Sprintf("/rooms/%s/join", roomId), bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
-	res, err := app.Test(req)
+	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
 	assert.Equal(400, res.StatusCode)
@@ -295,7 +295,7 @@ func TestJoinRoomInvalidContentType(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", fmt.Sprintf("/rooms/%s/join", roomId), bytes.NewReader(body))
 	req.Header.Set("Content-Type", "plain/text")
-	res, err := app.Test(req)
+	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
 	assert.Equal(500, res.StatusCode)
@@ -319,7 +319,7 @@ func TestJoinRoomThatRoomNotExists(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", fmt.Sprintf("/rooms/%s/join", roomId), bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
-	res, err := app.Test(req)
+	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
 	assert.Equal(404, res.StatusCode)
@@ -365,7 +365,7 @@ func TestGetPlayersFromRoom(t *testing.T) {
 
 	// Get players
 	req, _ := http.NewRequest("GET", fmt.Sprintf("/rooms/%s/players", roomId), nil)
-	res, err := app.Test(req)
+	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
 	assert.Equal(200, res.StatusCode)
@@ -390,7 +390,7 @@ func TestGetPlayersThatRoomNotExists(t *testing.T) {
 	roomId := utils.UUID()
 
 	req, _ := http.NewRequest("GET", fmt.Sprintf("/rooms/%s/players", roomId), nil)
-	res, err := app.Test(req)
+	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
 	assert.Equal(404, res.StatusCode)
