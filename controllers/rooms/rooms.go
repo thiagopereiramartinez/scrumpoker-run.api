@@ -147,8 +147,8 @@ func getPlayers(c *fiber.Ctx) error {
 }
 
 // Registrar endpoints
-func Register(app *fiber.App) {
-	room := app.Group("/rooms")
+func Register(router fiber.Router) {
+	room := router.Group("/rooms")
 
 	room.Post("", newRoom)
 	room.Post(":id/join", joinRoom)

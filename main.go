@@ -54,5 +54,4 @@ func main() {
 		container.Make(&db)
 		db.Close()
 	}()
-
 }

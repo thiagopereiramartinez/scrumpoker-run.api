@@ -10,10 +10,12 @@ import (
 	"github.com/gofiber/fiber/v2/utils"
 	"github.com/golobby/container"
 	Assert "github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/di"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/models"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/models/players"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/models/rooms"
+	"github.com/thiagopereiramartinez/scrumpoker-run.api/test"
 	"golang.org/x/net/nettest"
 	"io/ioutil"
 	"net/http"
@@ -265,7 +267,7 @@ func TestJoinRoomInvalidJsonBody(t *testing.T) {
 	assert := Assert.New(t)
 	roomId := utils.UUID()
 
-	body, _ := json.Marshal(map[string]interface{} {
+	body, _ := json.Marshal(map[string]interface{}{
 		"foo": "bar",
 	})
 
@@ -383,7 +385,6 @@ func TestGetPlayersFromRoom(t *testing.T) {
 	}
 }
 
-
 func TestGetPlayersThatRoomNotExists(t *testing.T) {
 
 	assert := Assert.New(t)
@@ -405,29 +406,16 @@ func TestGetPlayersThatRoomNotExists(t *testing.T) {
 
 func TestRegisterRoutes(t *testing.T) {
 
-	assert := Assert.New(t)
+	_ = Assert.New(t)
 
-	app := fiber.New()
-	Register(app)
+	router := new(test.MockRouter)
+	router.On("Group", "/rooms", mock.Anything).Return(router)
+	router.On("Post", "", mock.Anything).Return(router)
+	router.On("Post", ":id/join", mock.Anything).Return(router)
+	router.On("Get", ":id/players", mock.Anything).Return(router)
 
-	var count = 0
+	Register(router)
 
-	for _, s := range app.Stack() {
-		for _, st := range s {
-			if st.Method == "POST" && st.Path == "/rooms" {
-				count += 1
-			}
-			if st.Method == "POST" && st.Path == "/rooms/:id/join" {
-				count += 1
-			}
-			if st.Method == "GET" && st.Path == "/rooms/:id/players" {
-				count += 1
-			}
-			if st.Method == "HEAD" && st.Path == "/rooms/:id/players" {
-				count += 1
-			}
-		}
-	}
+	router.AssertExpectations(t)
 
-	assert.Equal(4, count)
 }

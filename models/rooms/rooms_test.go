@@ -22,3 +22,21 @@ func TestRoomNewRequestInvalid(t *testing.T) {
 	assert.Errorf(t, room.Validate(), "the name of the room is required")
 
 }
+
+func TestRoomJoinRequestValid(t *testing.T) {
+
+	room := RoomJoinRequest{
+		PlayerName: "thiago",
+	}
+	assert.NoError(t, room.Validate())
+
+}
+
+func TestRoomJoinRequestInvalid(t *testing.T) {
+
+	room := RoomJoinRequest{
+		PlayerName: "",
+	}
+	assert.Errorf(t, room.Validate(), "the name of the room is required")
+
+}
