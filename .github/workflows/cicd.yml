@@ -53,12 +53,12 @@ jobs:
 
       - name: 'Download Go dependencies'
         run: |
-          go get
+          go get ./cmd/main
 
       - name: 'Generate Swagger docs'
         run: |
           go get -u github.com/swaggo/swag/cmd/swag
-          ~/go/bin/swag init
+          ~/go/bin/swag init --dir ./cmd/main --output api --parseDependency
 
       - name: 'Test project'
         run: |
@@ -97,7 +97,7 @@ jobs:
       - name: 'Generate Swagger docs'
         run: |
           go get -u github.com/swaggo/swag/cmd/swag
-          ~/go/bin/swag init
+          ~/go/bin/swag init --dir ./cmd/main --output api --parseDependency
 
       - name: 'Generate Docker image'
         id: build

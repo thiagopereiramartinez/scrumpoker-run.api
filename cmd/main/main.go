@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/golobby/container"
-	_ "github.com/thiagopereiramartinez/scrumpoker-run.api/docs"
+	_ "github.com/thiagopereiramartinez/scrumpoker-run.api/api"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/internal/controllers/rooms"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/internal/di"
 	"log"
