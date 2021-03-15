@@ -2,7 +2,7 @@ package utils
 
 import (
 	"errors"
-	"github.com/thiagopereiramartinez/scrumpoker-run.api/models"
+	"github.com/thiagopereiramartinez/scrumpoker-run.api/internal/models"
 )
 
 type SenderContext interface {

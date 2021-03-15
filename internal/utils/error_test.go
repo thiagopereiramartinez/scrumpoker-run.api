@@ -4,7 +4,7 @@ import (
 	"errors"
 	Assert "github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"github.com/thiagopereiramartinez/scrumpoker-run.api/models"
+	"github.com/thiagopereiramartinez/scrumpoker-run.api/internal/models"
 	"testing"
 )
 

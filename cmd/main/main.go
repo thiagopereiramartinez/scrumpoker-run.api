@@ -7,9 +7,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/golobby/container"
-	"github.com/thiagopereiramartinez/scrumpoker-run.api/controllers/rooms"
-	"github.com/thiagopereiramartinez/scrumpoker-run.api/di"
 	_ "github.com/thiagopereiramartinez/scrumpoker-run.api/docs"
+	"github.com/thiagopereiramartinez/scrumpoker-run.api/internal/controllers/rooms"
+	"github.com/thiagopereiramartinez/scrumpoker-run.api/internal/di"
 	"log"
 	"os"
 )
@@ -26,17 +26,8 @@ func main() {
 	// Create Fiber App
 	app := fiber.New()
 
-	// Setup CORS
-	app.Use(cors.New())
-
-	// Setup Swagger
-	app.Get("/swagger", func(ctx *fiber.Ctx) error {
-		return ctx.Redirect("/swagger/index.html")
-	})
-	app.Get("/swagger/*", swagger.Handler)
-
-	// Register "rooms"
-	rooms.Register(app)
+	// Configure Router
+	SetupRouter(app)
 
 	// Initialize Fiber App
 	port := os.Getenv("PORT")
@@ -54,4 +45,20 @@ func main() {
 		container.Make(&db)
 		db.Close()
 	}()
+}
+
+func SetupRouter(app fiber.Router) {
+
+	// Setup CORS
+	app.Use(cors.New())
+
+	// Setup Swagger
+	app.Get("/swagger", func(ctx *fiber.Ctx) error {
+		return ctx.Redirect("/swagger/index.html")
+	})
+	app.Get("/swagger/*", swagger.Handler)
+
+	// Register "rooms"
+	rooms.Register(app)
+
 }
