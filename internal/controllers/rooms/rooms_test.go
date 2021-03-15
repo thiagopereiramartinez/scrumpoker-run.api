@@ -11,7 +11,7 @@ import (
 	"github.com/golobby/container"
 	Assert "github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"github.com/thiagopereiramartinez/scrumpoker-run.api/di"
+	"github.com/thiagopereiramartinez/scrumpoker-run.api/internal/di"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/models"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/models/players"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/models/rooms"

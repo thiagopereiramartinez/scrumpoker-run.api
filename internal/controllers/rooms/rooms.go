@@ -6,9 +6,9 @@ import (
 	"errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golobby/container"
-	"github.com/thiagopereiramartinez/scrumpoker-run.api/models/players"
-	"github.com/thiagopereiramartinez/scrumpoker-run.api/models/rooms"
-	"github.com/thiagopereiramartinez/scrumpoker-run.api/utils"
+	"github.com/thiagopereiramartinez/scrumpoker-run.api/internal/models/players"
+	"github.com/thiagopereiramartinez/scrumpoker-run.api/internal/models/rooms"
+	"github.com/thiagopereiramartinez/scrumpoker-run.api/internal/utils"
 )
 
 // @Summary Create a new room
