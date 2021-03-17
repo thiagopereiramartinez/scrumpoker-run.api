@@ -51,7 +51,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/rooms.RoomNewResponse"
                         }
                     },
                     "400": {
@@ -69,7 +69,7 @@ var doc = `{
                 }
             }
         },
-        "/rooms/{id}/join": {
+        "/rooms/{pincode}/join": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -93,8 +93,8 @@ var doc = `{
                     },
                     {
                         "type": "string",
-                        "description": "Room Id",
-                        "name": "id",
+                        "description": "Pin Code of the Room",
+                        "name": "pincode",
                         "in": "path",
                         "required": true
                     }
@@ -127,7 +127,7 @@ var doc = `{
                 }
             }
         },
-        "/rooms/{id}/players": {
+        "/rooms/{pincode}/players": {
             "get": {
                 "produces": [
                     "application/json"
@@ -139,8 +139,8 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Room Id",
-                        "name": "id",
+                        "description": "Pin Code of the Room",
+                        "name": "pincode",
                         "in": "path",
                         "required": true
                     }
@@ -208,6 +208,9 @@ var doc = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "pincode": {
+                    "type": "string"
                 }
             }
         },
@@ -237,6 +240,17 @@ var doc = `{
             "type": "object",
             "properties": {
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "rooms.RoomNewResponse": {
+            "type": "object",
+            "properties": {
+                "pincode": {
+                    "type": "string"
+                },
+                "room_id": {
                     "type": "string"
                 }
             }

@@ -18,15 +18,18 @@ import (
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/test"
 	"golang.org/x/net/nettest"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
-	"strings"
 	"testing"
 )
 
 var app *fiber.App
 var db *firestore.Client
+var ctx context.Context
 
 func TestMain(m *testing.M) {
+
+	ctx = context.Background()
 
 	_ = di.SetupDependencies()
 	container.Make(&db)
@@ -65,13 +68,18 @@ func TestNewRoomValid(t *testing.T) {
 	assert.Equal(200, res.StatusCode)
 
 	bodyResp, _ := ioutil.ReadAll(res.Body)
-	docId := string(bodyResp)
-	assert.NotEmpty(docId)
+	response := new(rooms.RoomNewResponse)
+	err = json.Unmarshal(bodyResp, response)
+	assert.NoError(err)
 
-	snap, err := db.Collection("rooms").Doc(strings.ReplaceAll(docId, "\"", "")).Get(context.Background())
+	assert.NotEmpty(response.RoomId)
+	assert.NotEmpty(response.PinCode)
+
+	snap, err := db.Collection("rooms").Doc(response.RoomId).Get(ctx)
 	assert.NoError(err)
 	assert.True(snap.Exists())
 	assert.Equal("Room", snap.Data()["name"])
+	assert.Equal(response.PinCode, snap.Data()["pincode"])
 	assert.NotEmpty(snap.Data()["timestamp"])
 }
 
@@ -171,10 +179,13 @@ func TestJoinRoomValid(t *testing.T) {
 
 	assert := Assert.New(t)
 
+	pinCode := fmt.Sprintf("%06d", rand.Intn(999999))
+
 	// Create a new room
 	roomDoc := db.Collection("rooms").NewDoc()
-	_, err := roomDoc.Set(context.Background(), map[string]interface{}{
+	_, err := roomDoc.Set(ctx, map[string]interface{}{
 		"name":      "Room",
+		"pincode":   pinCode,
 		"timestamp": firestore.ServerTimestamp,
 	})
 	assert.NoError(err)
@@ -187,7 +198,7 @@ func TestJoinRoomValid(t *testing.T) {
 		PlayerName: "Thiago",
 	})
 
-	req, _ := http.NewRequest("POST", fmt.Sprintf("/rooms/%s/join", roomId), bytes.NewReader(body))
+	req, _ := http.NewRequest("POST", fmt.Sprintf("/rooms/%s/join", pinCode), bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 	res, err := app.Test(req, 30000)
 
@@ -200,15 +211,16 @@ func TestJoinRoomValid(t *testing.T) {
 	err = json.Unmarshal(bodyResp, result)
 	assert.NoError(err)
 
-	roomSnap, _ := roomDoc.Get(context.Background())
+	roomSnap, _ := roomDoc.Get(ctx)
 	var room = new(rooms.Room)
 	_ = roomSnap.DataTo(room)
 
 	assert.Equal(result.Room.Id, roomDoc.ID)
 	assert.Equal(result.Room.Name, room.Name)
+	assert.Equal(result.Room.PinCode, room.PinCode)
 	assert.Equal(result.Room.CreatedAt, room.CreatedAt)
 
-	playerSnap, _ := db.Collection("rooms").Doc(roomId).Collection("players").Doc(result.PlayerId).Get(context.Background())
+	playerSnap, _ := db.Collection("rooms").Doc(roomId).Collection("players").Doc(result.PlayerId).Get(ctx)
 	assert.True(playerSnap.Exists())
 
 	assert.Equal(result.PlayerName, playerSnap.Data()["name"])
@@ -313,13 +325,13 @@ func TestJoinRoomInvalidContentType(t *testing.T) {
 func TestJoinRoomThatRoomNotExists(t *testing.T) {
 
 	assert := Assert.New(t)
-	roomId := utils.UUID()
+	pinCode := fmt.Sprintf("%06d", rand.Intn(999999))
 
 	body, _ := json.Marshal(rooms.RoomJoinRequest{
 		PlayerName: "Thiago",
 	})
 
-	req, _ := http.NewRequest("POST", fmt.Sprintf("/rooms/%s/join", roomId), bytes.NewReader(body))
+	req, _ := http.NewRequest("POST", fmt.Sprintf("/rooms/%s/join", pinCode), bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 	res, err := app.Test(req, 30000)
 
@@ -339,9 +351,11 @@ func TestGetPlayersFromRoom(t *testing.T) {
 	assert := Assert.New(t)
 
 	// Create a new room
+	pinCode := fmt.Sprintf("%06d", rand.Intn(999999))
 	roomDoc := db.Collection("rooms").NewDoc()
-	_, err := roomDoc.Set(context.Background(), map[string]interface{}{
+	_, err := roomDoc.Set(ctx, map[string]interface{}{
 		"name":      "Room",
+		"pincode":   pinCode,
 		"timestamp": firestore.ServerTimestamp,
 	})
 	assert.NoError(err)
@@ -353,20 +367,20 @@ func TestGetPlayersFromRoom(t *testing.T) {
 	pls := make(map[string]*players.Player, 0)
 	for i := range []int{0, 1, 2, 3, 4} {
 		doc := db.Collection("rooms").Doc(roomDoc.ID).Collection("players").NewDoc()
-		_, err = doc.Set(context.Background(), map[string]interface{}{
+		_, err = doc.Set(ctx, map[string]interface{}{
 			"name":      fmt.Sprintf("Player #%d", i),
 			"timestamp": firestore.ServerTimestamp,
 		})
 		assert.NoError(err)
 
-		snap, _ := db.Collection("rooms").Doc(roomDoc.ID).Collection("players").Doc(doc.ID).Get(context.Background())
+		snap, _ := db.Collection("rooms").Doc(roomDoc.ID).Collection("players").Doc(doc.ID).Get(ctx)
 		pls[doc.ID] = new(players.Player)
 		err = snap.DataTo(pls[doc.ID])
 		pls[doc.ID].Id = doc.ID
 	}
 
 	// Get players
-	req, _ := http.NewRequest("GET", fmt.Sprintf("/rooms/%s/players", roomId), nil)
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/rooms/%s/players", pinCode), nil)
 	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
@@ -388,9 +402,9 @@ func TestGetPlayersFromRoom(t *testing.T) {
 func TestGetPlayersThatRoomNotExists(t *testing.T) {
 
 	assert := Assert.New(t)
-	roomId := utils.UUID()
+	pinCode := fmt.Sprintf("%06d", rand.Intn(999999))
 
-	req, _ := http.NewRequest("GET", fmt.Sprintf("/rooms/%s/players", roomId), nil)
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/rooms/%s/players", pinCode), nil)
 	res, err := app.Test(req, 30000)
 
 	assert.NoError(err)
@@ -411,8 +425,8 @@ func TestRegisterRoutes(t *testing.T) {
 	router := new(test.MockRouter)
 	router.On("Group", "/rooms", mock.Anything).Return(router)
 	router.On("Post", "", mock.Anything).Return(router)
-	router.On("Post", ":id/join", mock.Anything).Return(router)
-	router.On("Get", ":id/players", mock.Anything).Return(router)
+	router.On("Post", ":pincode/join", mock.Anything).Return(router)
+	router.On("Get", ":pincode/players", mock.Anything).Return(router)
 
 	Register(router)
 

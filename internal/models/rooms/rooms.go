@@ -9,6 +9,7 @@ import (
 type Room struct {
 	Id        string    `json:"id"`
 	Name      string    `json:"name" firestore:"name"`
+	PinCode   string    `json:"pincode" firestore:"pincode"`
 	CreatedAt time.Time `json:"created_at" firestore:"timestamp"`
 }
 
@@ -22,6 +23,11 @@ func (body *RoomNewRequest) Validate() error {
 	}
 
 	return nil
+}
+
+type RoomNewResponse struct {
+	RoomId  string `json:"room_id"`
+	PinCode string `json:"pincode"`
 }
 
 type RoomJoinRequest struct {
