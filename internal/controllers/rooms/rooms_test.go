@@ -25,7 +25,6 @@ import (
 
 var app *fiber.App
 var db *firestore.Client
-var ctx context.Context
 
 func TestMain(m *testing.M) {
 

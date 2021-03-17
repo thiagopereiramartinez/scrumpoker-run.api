@@ -14,6 +14,8 @@ import (
 	"time"
 )
 
+var ctx context.Context
+
 // @Summary Create a new room
 // @Tags Rooms
 // @Param room body rooms.RoomNewRequest true "Create a new room"
@@ -42,8 +44,7 @@ func newRoom(c *fiber.Ctx) error {
 	rd := rand.New(seed)
 	pinCode := fmt.Sprintf("%06d", rd.Intn(999999))
 
-	doc := db.Collection("rooms").NewDoc()
-	_, err := doc.Set(context.Background(), map[string]interface{}{
+	doc, _, err := db.Collection("rooms").Add(ctx, map[string]interface{}{
 		"name":      body.Name,
 		"pincode":   pinCode,
 		"timestamp": firestore.ServerTimestamp,
@@ -71,8 +72,6 @@ func newRoom(c *fiber.Ctx) error {
 // @Failure 500 {object} models.Error
 // @Router /rooms/{pincode}/join [post]
 func joinRoom(c *fiber.Ctx) error {
-
-	ctx := context.Background()
 
 	body := new(rooms.RoomJoinRequest)
 	if err := c.BodyParser(body); err != nil {
@@ -106,8 +105,7 @@ func joinRoom(c *fiber.Ctx) error {
 	}
 	room.Id = roomId
 
-	player := db.Collection("rooms").Doc(roomId).Collection("players").NewDoc()
-	_, err = player.Set(context.Background(), map[string]interface{}{
+	player, _, err := db.Collection("rooms").Doc(roomId).Collection("players").Add(ctx, map[string]interface{}{
 		"name":      body.PlayerName,
 		"timestamp": firestore.ServerTimestamp,
 	})
@@ -133,7 +131,6 @@ func joinRoom(c *fiber.Ctx) error {
 // @Router /rooms/{pincode}/players [get]
 func getPlayers(c *fiber.Ctx) error {
 
-	ctx := context.Background()
 	pinCode := c.Params("pincode")
 
 	db := new(firestore.Client)
@@ -147,7 +144,7 @@ func getPlayers(c *fiber.Ctx) error {
 
 	roomId := roomSnap.Ref.ID
 
-	snaps, err := db.Collection("rooms").Doc(roomId).Collection("players").Documents(ctx).GetAll()
+	snaps, err := db.Collection("rooms").Doc(roomId).Collection("players").OrderBy("timestamp", firestore.Asc).Documents(ctx).GetAll()
 	if err != nil {
 		_ = utils.SendError(c, 500, err)
 		return nil
@@ -166,6 +163,9 @@ func getPlayers(c *fiber.Ctx) error {
 
 // Registrar endpoints
 func Register(router fiber.Router) {
+
+	ctx = context.Background()
+
 	room := router.Group("/rooms")
 
 	room.Post("", newRoom)
