@@ -20,4 +20,3 @@ func TestSetupFirestore(t *testing.T) {
 	assert.NotNil(client)
 
 }
-

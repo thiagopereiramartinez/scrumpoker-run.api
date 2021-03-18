@@ -9,6 +9,7 @@ import (
 	"github.com/golobby/container"
 	_ "github.com/thiagopereiramartinez/scrumpoker-run.api/api"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/internal/controllers/rooms"
+	"github.com/thiagopereiramartinez/scrumpoker-run.api/internal/controllers/votings"
 	"github.com/thiagopereiramartinez/scrumpoker-run.api/internal/di"
 	"log"
 	"os"
@@ -60,5 +61,8 @@ func SetupRouter(app fiber.Router) {
 
 	// Register "rooms"
 	rooms.Register(app)
+
+	// Register "votings"
+	votings.Register(app)
 
 }
