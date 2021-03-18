@@ -69,6 +69,46 @@ var doc = `{
                 }
             }
         },
+        "/rooms/{pincode}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Get room informations",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Pin Code",
+                        "name": "pincode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/rooms.RoomGetResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/rooms/{pincode}/join": {
             "post": {
                 "consumes": [
@@ -93,7 +133,7 @@ var doc = `{
                     },
                     {
                         "type": "string",
-                        "description": "Pin Code of the Room",
+                        "description": "Pin Code",
                         "name": "pincode",
                         "in": "path",
                         "required": true
@@ -139,7 +179,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Pin Code of the Room",
+                        "description": "Pin Code",
                         "name": "pincode",
                         "in": "path",
                         "required": true
@@ -153,6 +193,274 @@ var doc = `{
                             "items": {
                                 "$ref": "#/definitions/players.Player"
                             }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/{pincode}/players/{id}": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Rename player",
+                "parameters": [
+                    {
+                        "description": "User name",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/rooms.RenameUserRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Pin Code",
+                        "name": "pincode",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Player ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/{pincode}/topic": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Set a topic",
+                "parameters": [
+                    {
+                        "description": "Set a topic",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/rooms.RoomTopicRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Pin Code",
+                        "name": "pincode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/votings/{pincode}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Votings"
+                ],
+                "summary": "Get votes in a room",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Pin Code",
+                        "name": "pincode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/votings.Vote"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Votings"
+                ],
+                "summary": "Vote in a room",
+                "parameters": [
+                    {
+                        "description": "Vote fields",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/votings.RegisterVoteRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Pin Code",
+                        "name": "pincode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/votings/{pincode}/reset": {
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Votings"
+                ],
+                "summary": "Reset votes in a room",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Pin Code",
+                        "name": "pincode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
                         }
                     },
                     "404": {
@@ -186,6 +494,9 @@ var doc = `{
         "players.Player": {
             "type": "object",
             "properties": {
+                "host": {
+                    "type": "boolean"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -193,6 +504,14 @@ var doc = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "rooms.RenameUserRequest": {
+            "type": "object",
+            "properties": {
+                "player_name": {
                     "type": "string"
                 }
             }
@@ -211,12 +530,44 @@ var doc = `{
                 },
                 "pincode": {
                     "type": "string"
+                },
+                "topic": {
+                    "type": "string"
+                }
+            }
+        },
+        "rooms.RoomGetResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pincode": {
+                    "type": "string"
+                },
+                "players": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/players.Player"
+                    }
+                },
+                "topic": {
+                    "type": "string"
                 }
             }
         },
         "rooms.RoomJoinRequest": {
             "type": "object",
             "properties": {
+                "host": {
+                    "type": "boolean"
+                },
                 "player_name": {
                     "type": "string"
                 }
@@ -225,6 +576,9 @@ var doc = `{
         "rooms.RoomJoinResponse": {
             "type": "object",
             "properties": {
+                "host": {
+                    "type": "boolean"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -251,6 +605,42 @@ var doc = `{
                     "type": "string"
                 },
                 "room_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "rooms.RoomTopicRequest": {
+            "type": "object",
+            "properties": {
+                "topic": {
+                    "type": "string"
+                }
+            }
+        },
+        "votings.RegisterVoteRequest": {
+            "type": "object",
+            "properties": {
+                "player_id": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                }
+            }
+        },
+        "votings.Vote": {
+            "type": "object",
+            "properties": {
+                "player_id": {
+                    "type": "string"
+                },
+                "player_name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                },
+                "voted_at": {
                     "type": "string"
                 }
             }

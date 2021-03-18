@@ -19,4 +19,3 @@ func TestSetupDependencies(t *testing.T) {
 
 	assert.NotNil(client)
 }
-

@@ -8,11 +8,18 @@ definitions:
     type: object
   players.Player:
     properties:
+      host:
+        type: boolean
       id:
         type: string
       joined_at:
         type: string
       name:
+        type: string
+    type: object
+  rooms.RenameUserRequest:
+    properties:
+      player_name:
         type: string
     type: object
   rooms.Room:
@@ -25,14 +32,37 @@ definitions:
         type: string
       pincode:
         type: string
+      topic:
+        type: string
+    type: object
+  rooms.RoomGetResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      pincode:
+        type: string
+      players:
+        items:
+          $ref: '#/definitions/players.Player'
+        type: array
+      topic:
+        type: string
     type: object
   rooms.RoomJoinRequest:
     properties:
+      host:
+        type: boolean
       player_name:
         type: string
     type: object
   rooms.RoomJoinResponse:
     properties:
+      host:
+        type: boolean
       id:
         type: string
       name:
@@ -50,6 +80,29 @@ definitions:
       pincode:
         type: string
       room_id:
+        type: string
+    type: object
+  rooms.RoomTopicRequest:
+    properties:
+      topic:
+        type: string
+    type: object
+  votings.RegisterVoteRequest:
+    properties:
+      player_id:
+        type: string
+      value:
+        type: number
+    type: object
+  votings.Vote:
+    properties:
+      player_id:
+        type: string
+      player_name:
+        type: string
+      value:
+        type: number
+      voted_at:
         type: string
     type: object
 info:
@@ -86,6 +139,32 @@ paths:
       summary: Create a new room
       tags:
       - Rooms
+  /rooms/{pincode}:
+    get:
+      parameters:
+      - description: Pin Code
+        in: path
+        name: pincode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rooms.RoomGetResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Get room informations
+      tags:
+      - Rooms
   /rooms/{pincode}/join:
     post:
       consumes:
@@ -97,7 +176,7 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/rooms.RoomJoinRequest'
-      - description: Pin Code of the Room
+      - description: Pin Code
         in: path
         name: pincode
         required: true
@@ -127,7 +206,7 @@ paths:
   /rooms/{pincode}/players:
     get:
       parameters:
-      - description: Pin Code of the Room
+      - description: Pin Code
         in: path
         name: pincode
         required: true
@@ -152,4 +231,180 @@ paths:
       summary: Get players from a room
       tags:
       - Rooms
+  /rooms/{pincode}/players/{id}:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: User name
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/rooms.RenameUserRequest'
+      - description: Pin Code
+        in: path
+        name: pincode
+        required: true
+        type: string
+      - description: Player ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Rename player
+      tags:
+      - Rooms
+  /rooms/{pincode}/topic:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Set a topic
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/rooms.RoomTopicRequest'
+      - description: Pin Code
+        in: path
+        name: pincode
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Set a topic
+      tags:
+      - Rooms
+  /votings/{pincode}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Pin Code
+        in: path
+        name: pincode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/votings.Vote'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Get votes in a room
+      tags:
+      - Votings
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Vote fields
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/votings.RegisterVoteRequest'
+      - description: Pin Code
+        in: path
+        name: pincode
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Vote in a room
+      tags:
+      - Votings
+  /votings/{pincode}/reset:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Pin Code
+        in: path
+        name: pincode
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      summary: Reset votes in a room
+      tags:
+      - Votings
 swagger: "2.0"
