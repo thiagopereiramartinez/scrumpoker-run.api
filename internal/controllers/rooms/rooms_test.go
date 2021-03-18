@@ -424,8 +424,11 @@ func TestRegisterRoutes(t *testing.T) {
 	router := new(test.MockRouter)
 	router.On("Group", "/rooms", mock.Anything).Return(router)
 	router.On("Post", "", mock.Anything).Return(router)
+	router.On("Get", ":pincode", mock.Anything).Return(router)
+	router.On("Put", ":pincode/topic", mock.Anything).Return(router)
 	router.On("Post", ":pincode/join", mock.Anything).Return(router)
 	router.On("Get", ":pincode/players", mock.Anything).Return(router)
+	router.On("Patch", ":pincode/players/:id", mock.Anything).Return(router)
 
 	Register(router)
 

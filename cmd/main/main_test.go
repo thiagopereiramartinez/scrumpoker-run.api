@@ -14,8 +14,11 @@ func TestSetupRouter(t *testing.T) {
 
 	router.On("Use", mock.Anything).Return(router)
 	router.On("Get", mock.Anything, mock.Anything).Return(router)
+	router.On("Put", mock.Anything, mock.Anything).Return(router)
 	router.On("Post", mock.Anything, mock.Anything).Return(router)
+	router.On("Patch", mock.Anything, mock.Anything).Return(router)
 	router.On("Group", mock.Anything, mock.Anything).Return(router)
+	router.On("Delete", mock.Anything, mock.Anything).Return(router)
 
 	SetupRouter(router)
 
